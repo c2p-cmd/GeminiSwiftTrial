@@ -3,6 +3,7 @@
 ## Gemini Pro Model
 
 Harnessing the power of SwiftUI and Google's Gemini Pro I have made this app
+The package I [used](https://github.com/google/generative-ai-swift)
 
 ### Features:
 - Text Chat
