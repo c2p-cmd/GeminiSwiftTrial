@@ -7,19 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0029FD762B2C908A00897DB5 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0029FD752B2C908A00897DB5 /* TextView.swift */; };
+		0029FD782B2CA4D700897DB5 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0029FD772B2CA4D700897DB5 /* Config.plist */; };
 		00A475C92B2C8BDB001A63A0 /* GeminiTrialApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A475C82B2C8BDB001A63A0 /* GeminiTrialApp.swift */; };
 		00A475CB2B2C8BDB001A63A0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A475CA2B2C8BDB001A63A0 /* ContentView.swift */; };
 		00A475CD2B2C8BDD001A63A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00A475CC2B2C8BDD001A63A0 /* Assets.xcassets */; };
 		00A475D12B2C8BDD001A63A0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00A475D02B2C8BDD001A63A0 /* Preview Assets.xcassets */; };
+		00A475DB2B2C8BFA001A63A0 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A475DA2B2C8BFA001A63A0 /* Utils.swift */; };
+		00A475DE2B2C8C10001A63A0 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 00A475DD2B2C8C10001A63A0 /* GoogleGenerativeAI */; };
+		00A475E02B2C8CF9001A63A0 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A475DF2B2C8CF9001A63A0 /* ViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0029FD752B2C908A00897DB5 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
+		0029FD772B2CA4D700897DB5 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		00A475C52B2C8BDB001A63A0 /* GeminiTrial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeminiTrial.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A475C82B2C8BDB001A63A0 /* GeminiTrialApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiTrialApp.swift; sourceTree = "<group>"; };
 		00A475CA2B2C8BDB001A63A0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		00A475CC2B2C8BDD001A63A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		00A475CE2B2C8BDD001A63A0 /* GeminiTrial.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GeminiTrial.entitlements; sourceTree = "<group>"; };
 		00A475D02B2C8BDD001A63A0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		00A475DA2B2C8BFA001A63A0 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		00A475DF2B2C8CF9001A63A0 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00A475DE2B2C8C10001A63A0 /* GoogleGenerativeAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,11 +62,14 @@
 		00A475C72B2C8BDB001A63A0 /* GeminiTrial */ = {
 			isa = PBXGroup;
 			children = (
+				00A475D72B2C8BE6001A63A0 /* Models */,
 				00A475C82B2C8BDB001A63A0 /* GeminiTrialApp.swift */,
 				00A475CA2B2C8BDB001A63A0 /* ContentView.swift */,
+				0029FD752B2C908A00897DB5 /* TextView.swift */,
 				00A475CC2B2C8BDD001A63A0 /* Assets.xcassets */,
 				00A475CE2B2C8BDD001A63A0 /* GeminiTrial.entitlements */,
 				00A475CF2B2C8BDD001A63A0 /* Preview Content */,
+				0029FD772B2CA4D700897DB5 /* Config.plist */,
 			);
 			path = GeminiTrial;
 			sourceTree = "<group>";
@@ -67,6 +80,15 @@
 				00A475D02B2C8BDD001A63A0 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		00A475D72B2C8BE6001A63A0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				00A475DA2B2C8BFA001A63A0 /* Utils.swift */,
+				00A475DF2B2C8CF9001A63A0 /* ViewModel.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -85,6 +107,9 @@
 			dependencies = (
 			);
 			name = GeminiTrial;
+			packageProductDependencies = (
+				00A475DD2B2C8C10001A63A0 /* GoogleGenerativeAI */,
+			);
 			productName = GeminiTrial;
 			productReference = 00A475C52B2C8BDB001A63A0 /* GeminiTrial.app */;
 			productType = "com.apple.product-type.application";
@@ -113,6 +138,9 @@
 				Base,
 			);
 			mainGroup = 00A475BC2B2C8BDB001A63A0;
+			packageReferences = (
+				00A475DC2B2C8C10001A63A0 /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
+			);
 			productRefGroup = 00A475C62B2C8BDB001A63A0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -127,6 +155,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0029FD782B2CA4D700897DB5 /* Config.plist in Resources */,
 				00A475D12B2C8BDD001A63A0 /* Preview Assets.xcassets in Resources */,
 				00A475CD2B2C8BDD001A63A0 /* Assets.xcassets in Resources */,
 			);
@@ -141,6 +170,9 @@
 			files = (
 				00A475CB2B2C8BDB001A63A0 /* ContentView.swift in Sources */,
 				00A475C92B2C8BDB001A63A0 /* GeminiTrialApp.swift in Sources */,
+				00A475E02B2C8CF9001A63A0 /* ViewModel.swift in Sources */,
+				00A475DB2B2C8BFA001A63A0 /* Utils.swift in Sources */,
+				0029FD762B2C908A00897DB5 /* TextView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +299,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GeminiTrial/GeminiTrial.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"GeminiTrial/Preview Content\"";
@@ -274,6 +307,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To upload images!";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -305,6 +339,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GeminiTrial/GeminiTrial.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"GeminiTrial/Preview Content\"";
@@ -312,6 +347,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To upload images!";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -359,6 +395,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		00A475DC2B2C8C10001A63A0 /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/generative-ai-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		00A475DD2B2C8C10001A63A0 /* GoogleGenerativeAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00A475DC2B2C8C10001A63A0 /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
+			productName = GoogleGenerativeAI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 00A475BD2B2C8BDB001A63A0 /* Project object */;
 }
