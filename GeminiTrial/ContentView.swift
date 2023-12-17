@@ -5,195 +5,196 @@
 //  Created by Sharan Thakur on 15/12/23.
 //
 
-import PhotosUI
+import ExyteChat
 import SwiftUI
 
+/// `ContentView` serves as the main interface for the chat application.
+///
+/// This SwiftUI view integrates a chat view, input toolbar, and additional functionalities like a swipe gesture to dismiss the keyboard and a toolbar for sharing.
 struct ContentView: View {
-    @State private var pickedItem: PhotosPickerItem?
-#if os(iOS)
-    @State private var pickedImage: UIImage?
-#else
-    @State private var pickedImage: NSImage?
-#endif
-    @State private var messages = [ChatMessage]()
     @Environment(\.viewModel) private var viewModel: ViewModel
-    @State var text: String = ""
-    @State var isBusy = false
+    
+    @State private var isBusy = false
+    @State private var showMenu = false
+    
+    /// Gesture to dismiss the keyboard by swiping.
+    let swipeToDismissKeyboard = DragGesture().onEnded { value in
+        UIApplication.shared.endEditing()
+    }
     
     var body: some View {
         NavigationStack {
-            VStack {
-                List(messages) { m in
-                    TextView(showingMessage: m)
-                }
-                .listStyle(.inset)
-                .opacity(isBusy ? 0.5 : 1.0)
-                .overlay(alignment: .center) {
-                    if isBusy {
-                        ProgressView {
-                            Label("Generating...", systemImage: "wand.and.stars.inverse")
-                                .symbolEffect(.variableColor.iterative.reversing)
-                        }
+            ChatView(
+                messages: viewModel.messages,
+                didSendMessage: didSendMessage(_:),
+                inputViewBuilder: inputViewToolbar(
+                    textBinding:attachments:state:style:actionClosure:dismissKeyboardClosure:
+                )
+            )
+            .chatType(.chat)
+            .setMediaPickerSelectionParameters(MediaPickerParameters(
+                mediaType: .photo,
+                selectionStyle: .checkmark,
+                selectionLimit: 1,
+                showFullscreenPreview: true
+            ))
+            .showMessageMenuOnLongPress(false)
+            .messageUseMarkdown(messageUseMarkdown: true)
+            .transition(.push(from: .bottom))
+            .id(viewModel.messages.description)
+            .padding([.bottom, .horizontal])
+            .opacity(isBusy ? 0.5 : 1.0)
+            .overlay(alignment: .center) {
+                if isBusy {
+                    ProgressView {
+                        Label("Generating...", systemImage: "wand.and.stars.inverse")
                     }
-                }
-                
-                inputBar()
-                    .padding()
-            }
-            .onChange(of: pickedItem) {
-                guard let pickedItem else {
-                    return
-                }
-                
-                pickedItem.loadTransferable(type: Data.self) { result in
-                    switch result {
-                    case .success(let success):
-                        if let success {
-                            withAnimation {
-#if os(iOS)
-                                self.pickedImage = UIImage(data: success)
-#else
-                                self.pickedImage = NSImage(data: success)
-#endif
-                                
-                            }
-                        }
-                        return
-                    case .failure(let failure):
-                        print(failure.localizedDescription)
-                        return
-                    }
+                    .opacity(1.0)
                 }
             }
+            .gesture(swipeToDismissKeyboard)
             .toolbar {
-                Button {
-                    
-#if os(iOS)
-                    UIApplication.shared.endEditing()
-#endif
-                    
-                    
-                } label: {
-                    Label("", systemImage: "keyboard.chevron.compact.down")
-                        .labelStyle(.iconOnly)
-                }
+                ShareLink(item: viewModel.lastBotMessage() ?? "", subject: Text("Gemini's Response"))
             }
-#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
-#endif
             .navigationTitle("Gemini Pro AI")
         }
     }
-    
+}
+
+extension ContentView {
+    /// Builds the input view toolbar for the chat interface.
+    ///
+    /// Depending on the style, this function provides different UI components for message input and additional actions like sending photos or copying text.
     @ViewBuilder
-    func inputBar() -> some View {
-        HStack {
-            PhotosPicker(selection: $pickedItem, matching: .any(of: [.images, .not(.cinematicVideos), .not(.videos)])) {
-                Label("", systemImage: "photo.badge.plus")
-                    .labelStyle(.iconOnly)
-            }
-            
-            VStack(alignment: .leading) {
-                if let pickedImage {
-#if os(iOS)
-                    Image(uiImage: pickedImage)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 75)
-                        .overlay(alignment: .topTrailing) {
-                            Image(systemName: "x.circle.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 10)
-                                .foregroundStyle(.white)
-                        }
-                        .onTapGesture {
-                            withAnimation {
-                                self.pickedImage = nil
+    func inputViewToolbar(
+        textBinding: Binding<String>,
+        attachments: InputViewAttachments,
+        state: InputViewState,
+        style: InputViewStyle,
+        actionClosure: @escaping (InputViewAction) -> Void,
+        dismissKeyboardClosure: () -> Void
+    ) -> some View {
+        Group {
+            switch style {
+            case .message: // input view on chat screen
+                HStack(alignment: .bottom) {
+                    VStack(spacing: 30) {
+                        if showMenu {
+                            Button {
+                                actionClosure(.photo)
+                            } label: {
+                                Label("", systemImage: "paperclip.circle.fill")
+                            }
+                            
+                            Button {
+                                copyToClipboard()
+                            } label: {
+                                Label("Copy response", systemImage: "doc.on.doc.fill")
                             }
                         }
-#else
-                    Image(nsImage: pickedImage)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 75)
-                        .overlay(alignment: .topTrailing) {
-                            Image(systemName: "x.circle.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 10)
-                                .foregroundStyle(.white)
+                        
+                        Toggle(isOn: $showMenu) {
+                            Label("", systemImage: showMenu ? "x.circle" : "plus")
+                                .font(.headline)
+                                .symbolVariant(.circle)
+                                .labelStyle(.iconOnly)
                         }
-                        .onTapGesture {
-                            withAnimation {
-                                self.pickedImage = nil
-                            }
+                        .toggleStyle(.button)
+                    }
+                    
+                    TextField("Write your message", text: textBinding, axis: .vertical)
+                    if textBinding.wrappedValue.isEmpty == false {
+                        Button {
+                            actionClosure(.send)
+                        } label: {
+                            Label("", systemImage: "paperplane.fill")
                         }
-#endif
+                    }
                 }
-                
-                TextField("Ask Gemini AI", text: $text, axis: .vertical)
-                    .disabled(isBusy)
-            }
-            
-            if text.isEmpty == false {
-                Button(action: askAi, label: {
-                    Label("Send", systemImage: "paperplane")
-                })
+                .transition(.push(from: .bottom))
+                .id(showMenu.description)
+                .animation(.interpolatingSpring, value: showMenu.description)
+                .labelStyle(.iconOnly)
+            case .signature: // input view on photo selection screen
+                HStack {
+                    TextField("Compose a signature for photo", text: textBinding, axis: .vertical)
+                        .background(Color.green)
+                    Button {
+                        actionClosure(.send)
+                    } label: {
+                        Label("", systemImage: "paperplane.fill")
+                    }
+                }
             }
         }
-        .disabled(isBusy)
+        .padding(.top)
     }
     
-    func askAi() {
-#if os(iOS)
-        UIApplication.shared.endEditing()
-#endif
+    /// Copies the last bot message to the clipboard.
+    func copyToClipboard() {
+        let lastBotMessage = viewModel.lastBotMessage()
+        if let lastBotMessage {
+            UIPasteboard.general.string = lastBotMessage
+        }
+    }
+}
+
+extension ContentView {
+    /// Handles sending a message and updating the UI accordingly.
+    ///
+    /// This function processes the user's input, generates a response using the `viewModel`, and updates the chat view with new messages.
+    func didSendMessage(_ draftMessage: DraftMessage) {
         Task {
-            withAnimation {
-                self.pickedImage = nil
-                isBusy = true
+            await UIApplication.shared.endEditing()
+        }
+        Task {
+            var inputMessage = Message(
+                id: UUID().uuidString,
+                user: .currentUser,
+                text: draftMessage.text
+            )
+            
+            if let media = draftMessage.medias.first,
+               let url = await media.getURL(),
+               let thumbnailUrl = await media.getThumbnailURL() {
+                
+                inputMessage.attachments = [
+                    Attachment(
+                        id: media.id.uuidString,
+                        thumbnail: thumbnailUrl,
+                        full: url,
+                        type: .image
+                    )
+                ]
             }
+            
+            withAnimation {
+                viewModel.append(message: inputMessage)
+            }
+            
+            isBusy = true
+            
+            let reply: Message
             do {
-                let input = text
-                self.text = ""
-                
-                let inputMessage = ChatMessage(
-                    LocalizedStringKey(input),
-                    alignment: .trailing
-                )
-                self.messages.append(inputMessage)
-                
-                let response = try await viewModel.generateText(from: input, with: pickedImage)
-                
-                let message = ChatMessage(
-                    LocalizedStringKey(response),
-                    alignment: .leading
-                )
-                
-                withAnimation {
-                    messages.append(message)
-                }
+                reply = try await viewModel.generateText(from: draftMessage)
             } catch {
-                let message = ChatMessage(
-                    LocalizedStringKey(error.localizedDescription),
-                    alignment: .leading
+                reply = Message(
+                    id: UUID().uuidString,
+                    user: .botUser,
+                    text: error.localizedDescription
                 )
-                withAnimation {
-                    messages.append(message)
-                }
             }
+            
             withAnimation {
-                isBusy = false
+                viewModel.append(message: reply)
             }
+            
+            isBusy = false
         }
     }
 }
 
 #Preview {
-    @State var viewModel = ViewModel()
-    
-    return ContentView()
-        .frame(maxWidth: 1280, maxHeight: 1200)
-        .environment(\.viewModel, viewModel)
+    ContentView()
 }

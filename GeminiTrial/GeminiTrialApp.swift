@@ -14,6 +14,7 @@ struct GeminiTrialApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.light)
                 .environment(\.viewModel, viewModel)
         }
     }
