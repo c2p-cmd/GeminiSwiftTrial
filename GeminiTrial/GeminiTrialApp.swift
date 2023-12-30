@@ -9,13 +9,9 @@ import SwiftUI
 
 @main
 struct GeminiTrialApp: App {
-    @State var viewModel = ViewModel()
-    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .preferredColorScheme(.light)
-                .environment(\.viewModel, viewModel)
         }
     }
 }

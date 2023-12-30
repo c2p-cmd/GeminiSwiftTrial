@@ -2,14 +2,67 @@
 //  Utils.swift
 //  GeminiTrial
 //
-//  Created by Sharan Thakur on 15/12/23.
+//  Created by Sharan Thakur on 30/12/23.
 //
 
-import ExyteChat
-import GoogleGenerativeAI
 import SwiftUI
+import SwiftyChat
 
-// MARK: - Enums for App.
+// MARK: AnyView ViewBuilder extension
+
+extension AnyView {
+    init<Content: View>(@ViewBuilder contentBuilder: () -> Content) {
+        self.init(contentBuilder())
+    }
+}
+
+// MARK: Chatting properties
+
+extension Color {
+    static let chatBlue = Color(#colorLiteral(red: 0, green: 0.597967267, blue: 0, alpha: 1))
+    static let chatGray = Color(#colorLiteral(red: 0.7861273885, green: 0.7897668481, blue: 0.7986581922, alpha: 1))
+}
+
+extension ChatMessageCellStyle {
+    static let myStyle = ChatMessageCellStyle(
+        incomingTextStyle: TextCellStyle(
+            textStyle: CommonTextStyle(
+                textColor: .black,
+                font: .system(.body, design: .rounded)
+            ),
+            textPadding: 16,
+            attributedTextStyle: AttributedTextStyle(textColor: .black, fontWeight: .bold),
+            cellBackgroundColor: Color.chatGray,
+            cellBorderWidth: 0,
+            cellShadowRadius: 5,
+            cellRoundedCorners: .allCorners
+        ),
+        outgoingTextStyle: TextCellStyle(
+            textStyle: CommonTextStyle(
+                textColor: .white,
+                font: .system(.body, design: .rounded)
+            ),
+            textPadding: 16,
+            attributedTextStyle: AttributedTextStyle(textColor: .white, fontWeight: .bold),
+            cellBackgroundColor: Color.chatBlue,
+            cellBorderWidth: 0,
+            cellShadowRadius: 5,
+            cellRoundedCorners: .allCorners
+        ),
+        imageTextCellStyle: ImageTextCellStyle(
+            textStyle: CommonTextStyle(
+                textColor: .white,
+                font: .system(.body, design: .rounded)
+            ),
+            textPadding: 16,
+            cellBackgroundColor: .chatBlue,
+            cellBorderWidth: 0,
+            cellShadowRadius: 5,
+            cellShadowColor: .black,
+            cellRoundedCorners: [.bottomLeft, .bottomRight]
+        )
+    )
+}
 
 /// `APIKey` enum manages the retrieval of API keys from the app's configuration file.
 ///
@@ -50,71 +103,6 @@ enum AppError: Error, CustomStringConvertible {
         case .noResponse:
             return "AI has nothing to say"
         }
-    }
-}
-
-// MARK: - All Extensions.
-
-/// Extension for the `User` type providing predefined static instances.
-///
-/// Includes static instances for a bot user and the current user.
-extension User {
-    /// Represents a predefined bot user in the chat.
-    static let botUser = User(id: UUID().uuidString, name: "Gemini", avatarURL: nil, isCurrentUser: false)
-    
-    /// Represents the current user of the app.
-    static let currentUser = User(id: UUID().uuidString, name: "User", avatarURL: nil, isCurrentUser: true)
-}
-
-/// Extension to add a custom string description to `GenerateContentError`.
-///
-/// This extension enhances the error type with a human-readable description, which is useful for debugging and displaying error messages to the user.
-extension GenerateContentError: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .internalError(let underlying):
-            return underlying.localizedDescription
-        case .promptBlocked(let response):
-            return "Prompt blocked for: \(response.text ?? "")"
-        case .responseStoppedEarly(let reason, _):
-            return "Response stopped early due to \(reason.description)"
-        }
-    }
-}
-
-/// Extension to add a custom string description to `FinishReason`.
-///
-/// Provides a human-readable description for each case of `FinishReason`, aiding in understanding the cause of a response's completion.
-extension FinishReason: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .unknown:
-            return "unknown"
-        case .unspecified:
-            return "unspecified"
-        case .stop:
-            return "stop"
-        case .maxTokens:
-            return "max tokens"
-        case .safety:
-            return "safety"
-        case .recitation:
-            return "recitation"
-        case .other:
-            return "other"
-        }
-    }
-}
-
-/// Extension for `LocalizedStringKey` to access its internal `key` property.
-///
-/// Note: Utilizes `Mirror` for reflection which can be performance-intensive if overused.
-extension LocalizedStringKey {
-    /// Retrieves the string key of the `LocalizedStringKey`.
-    ///
-    /// - Returns: The internal `key` as a `String` if available.
-    var stringKey: String? {
-        Mirror(reflecting: self).children.first(where: { $0.label == "key" })?.value as? String
     }
 }
 
